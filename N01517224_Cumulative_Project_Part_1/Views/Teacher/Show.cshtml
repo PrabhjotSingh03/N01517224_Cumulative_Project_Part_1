@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Show";
+}
+
+<h2>Teacher Information</h2>
+<div>
+    Teacher Id: @Model.Teacher.TeacherId
+</div>
+<div>
+    First Name: @Model.Teacher.TeacherFName
+</div>
+<div>
+    Last Name: @Model.Teacher.TeacherLName
+</div>
+<div>
+    Employee Number: @Model.Teacher.EmployeeNumber
+</div>
+<div>
+    HireDate: @Model.Teacher.HireDate
+</div>
+<div>
+    Salary: @Model.Teacher.Salary
+</div>
+<h3>@Model.Teacher.TeacherFName teaches @Model.Course.Count() course(s).</h3>
+<div>
+    @{
+        foreach (N01517224_Cumulative_Project_Part_1.Models.Course Course in Model.Course)
+        {
+
+            <div>
+                Class Name: @Model.Course.ClassName
+            </div>
+            <div>
+                Class Code: @Course.ClassCode
+            </div>
+            <br />
+        }
+    }
+</div>

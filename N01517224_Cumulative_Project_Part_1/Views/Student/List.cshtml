@@ -1,0 +1,26 @@
+﻿@model IEnumerable<N01517224_Cumulative_Project_Part_1.Models.Student>
+@{
+    ViewBag.Title = "List";
+}
+
+<h1>Teacher List</h1>
+
+<h2>There are total @Model.Count() student(s) in the school.</h2>
+<div>
+    <form action="/Student/List" method="GET">
+        <input type="text" name="SearchKey" placeholder="Type a name here" />
+        <input type="submit" value="Search" />
+    </form>
+
+</div>
+<div>
+
+    @{
+        foreach (N01517224_Cumulative_Project_Part_1.Models.Student Student in Model)
+        {
+            <div>
+                <a href="/Student/Show/@Student.StudentId">@Student.StudentFname @Student.StudentLname </a>
+            </div>
+        }
+    }
+</div>
