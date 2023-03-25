@@ -2,6 +2,32 @@
 @{
     ViewBag.Title = "Show";
 }
+<style>
+    #navlinks li {
+        display: inline;
+        margin-right: 20px;
+    }
 
-<h2>Show</h2>
+    #navlinks {
+        padding: 0;
+    }
+</style>
+<nav>
+    <ul id="navlinks" style="list-style:none; display:inline;">
+        <li><a href="/Course/List">Back to Class List</a></li>
+    </ul>
+</nav>
+
+<div id="courseDetails" class="courseDetails">
+    <div id="studentName">
+        <h2>@Model.ClassName</h2>
+        <hr />
+    </div>
+
+    <p>Class Code: <strong>@Model.ClassCode</strong></p>
+    <p>Start Date: <strong>@Model.StartDate.ToShortDateString()</strong></p>
+    <p>Finish Date: <strong>@Model.FinishDate.ToShortDateString()</strong></p>
+    <p>Teacher Name: <strong>@Model.TeacherName</strong></p>
+
+</div>
 

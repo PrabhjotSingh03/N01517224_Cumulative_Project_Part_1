@@ -23,7 +23,7 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
         /// Example : /api/CourseData/listcourses/web
         [HttpGet]
         [Route("api/CourseData/ListCourse/{searchText?}")]
-        public List<Subject> ListCourses(string searchText = null)
+        public List<Classes> ListCourses(string searchText = null)
         {
 
             MySqlConnection connection = School.AccessDatabase();
@@ -37,11 +37,11 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
 
             MySqlDataReader subjectsresult = mySqlCommand.ExecuteReader();
 
-            List<Subject> coursesList = new List<Subject>();
+            List<Classes> coursesList = new List<Classes>();
 
             while (subjectsresult.Read())
             {
-                Subject subject = new Subject()
+                Classes Classes = new Classes()
                 {
                     ClassCode = subjectsresult["classcode"].ToString(),
                     ClassId = Convert.ToInt32(subjectsresult["classid"]),
@@ -49,7 +49,7 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
                     FinishDate = Convert.ToDateTime(subjectsresult["finishdate"]),
                     StartDate = Convert.ToDateTime(subjectsresult["startdate"])
                 };
-                coursesList.Add(subject);
+                coursesList.Add(Classes);
             }
 
             connection.Close();
@@ -64,7 +64,7 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
         /// <returns>Returns Course details</returns>
         /// Example: /api/CourseData/getcourse/1
         [HttpGet]
-        public Subject GetCourse(int id)
+        public Classes GetCourse(int id)
         {
             MySqlConnection connection = School.AccessDatabase();
             connection.Open();
@@ -73,7 +73,7 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
             command.CommandText = "SELECT * FROM classes WHERE classid = " + id;
 
             MySqlDataReader subjectsresult = command.ExecuteReader();
-            Subject courseDetails = new Subject();
+            Classes courseDetails = new Classes();
 
             while (subjectsresult.Read())
             {
