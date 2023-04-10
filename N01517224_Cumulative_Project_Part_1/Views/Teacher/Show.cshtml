@@ -1,40 +1,63 @@
-﻿
+﻿@model N01517224_Cumulative_Project_Part_1.Models.Teacher
 @{
     ViewBag.Title = "Show";
 }
+<style>
+    #navlinks li {
+        display: inline;
+        margin-right: 20px;
+    }
+
+    #navlinks {
+        padding: 0;
+    }
+</style>
+<nav>
+    <ul id="navlinks" style="list-style:none; display:inline;">
+        <li><a href="/Teacher/List">Back to Teacher's List</a></li>
+        <li><a href="/Teacher/DeleteConfirm/@Model.TeacherId">Delete</a></li>
+    </ul>
+</nav>
 
 <h2>Teacher Information</h2>
-<div>
-    Teacher Id: @Model.Teacher.TeacherId
-</div>
-<div>
-    First Name: @Model.Teacher.TeacherFName
-</div>
-<div>
-    Last Name: @Model.Teacher.TeacherLName
-</div>
-<div>
-    Employee Number: @Model.Teacher.EmployeeNumber
-</div>
-<div>
-    HireDate: @Model.Teacher.HireDate
-</div>
-<div>
-    Salary: @Model.Teacher.Salary
-</div>
-<h3>@Model.Teacher.TeacherFName teaches @Model.Course.Count() course(s).</h3>
-<div>
-    @{
-        foreach (N01517224_Cumulative_Project_Part_1.Models.Course Course in Model.Course)
-        {
 
-            <div>
-                Class Name: @Model.Course.ClassName
-            </div>
-            <div>
-                Class Code: @Course.ClassCode
-            </div>
-            <br />
-        }
-    }
-</div>
+    <div>
+        Teacher Name: @Model.FirstName @Model.LastName
+    </div>
+    <div>
+        Employee Number: @Model.EmployeeNumber
+    </div>
+    <div>
+        Hire Date: @Model.HireDate.ToShortDateString()
+    </div>
+    <div>
+        @Model.Salary
+    </div>
+        <h3>Class Details</h3>
+        <div>
+            @if (Model.Subjects.Count != 0)
+            {
+                foreach (var item in Model.Subjects)
+                {
+                    <div>
+                        Class Name: @item.ClassName
+                    </div>
+                    <div>
+                        Class Code: @item.ClassCode
+                    </div>
+                    <div>
+                        Start Date: @item.StartDate.ToShortDateString()
+                    </div>
+                    <div>
+                        Finish Date: @item.FinishDate.ToShortDateString()
+                    </div>
+                }
+            }
+            else
+            {
+                <p>Class details not Available!</p>
+            }
+
+        </div>
+    
+

@@ -10,25 +10,20 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
 {
     public class StudentController : Controller
     {
-        // GET: Student
-        public ActionResult Index()
-        {
-            return View();
-        }
         // GET: Student/List
         // GET: Student/List?searchText=alex
-        public ActionResult List(string SearchKey = null)
+        public ActionResult List(string searchText = null)
         {
-            StudentDataController controller = new StudentDataController();
-            IEnumerable<Student> Students = controller.ListStudents(SearchKey);
-            return View(Students);
-        } 
+            StudentDataController studentDataController = new StudentDataController();
+            List<Student> students = studentDataController.ListStudents(searchText);
+            return View(students);
+        }
 
         // GET: /Student/show/{id}
-        public ActionResult Show(int studentid)
+        public ActionResult Show(int id)
         {
-            StudentDataController controller = new StudentDataController();
-            Student studentDetails = controller.FindStudents(studentid);
+            StudentDataController studentDataController = new StudentDataController();
+            Student studentDetails = studentDataController.GetStudent(id);
             return View(studentDetails);
         }
     }

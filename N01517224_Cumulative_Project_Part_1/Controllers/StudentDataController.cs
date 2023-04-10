@@ -12,53 +12,45 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
 {
     public class StudentDataController : ApiController
     {
-        private SchoolDbContext School = new SchoolDbContext();
+        private SchoolDbContext schoolDbContext = new SchoolDbContext();
 
         /// <summary>
         /// Returns a list of Students
         /// </summary>
-        /// <param name="SearchKey">takes in search text (optional)</param>
+        /// <param name="searchText">takes in search text (optional)</param>
         /// <returns>A list of Student objects</returns>
         /// Example : /api/StudentData/liststudents
         /// Example : /api/StudentData/liststudents/sarah
         [HttpGet]
-        [Route("api/StudentData/ListStudent/{SearchKey?}")]
-        public List<Student> ListStudents(string SearchKey = null)
+        [Route("api/StudentData/ListStudent/{searchText?}")]
+        public List<Student> ListStudents(string searchText = null)
         {
 
-            MySqlConnection Conn = School.AccessDatabase();
+            MySqlConnection connection = schoolDbContext.AccessDatabase();
 
-            Conn.Open();
-             
-            MySqlCommand cmd = Conn.CreateCommand();
+            connection.Open();
 
-            cmd.CommandText = "Select * from students where lower(studentfname) like lower(@key) or lower(studentlname) like lower(@key) or lower(concat(studentfname, ' ',studentlname)) like lower(@key) or lower(studentnumber) like lower(@key) or lower(enroldate)";
-            cmd.Parameters.AddWithValue("@key", "%" + SearchKey + "%");
-            cmd.Prepare();
+            MySqlCommand mySqlCommand = connection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT * FROM students WHERE LOWER(studentfname) like LOWER(@key) OR LOWER(studentlname) LIKE LOWER(@key)";
+            mySqlCommand.Parameters.AddWithValue("@key", "%" + searchText + "%");
+            mySqlCommand.Prepare();
 
-            MySqlDataReader ResultSet = cmd.ExecuteReader(); 
+            MySqlDataReader resultSet = mySqlCommand.ExecuteReader();
 
             List<Student> studentsList = new List<Student>();
 
-            while (ResultSet.Read())
+            while (resultSet.Read())
             {
-                
-                string StudentFname = ResultSet["studentfname"].ToString();
-                string StudentLname = ResultSet["studentlname"].ToString();
-                string StudentNumber = ResultSet["studentnumber"].ToString();
-                DateTime EnrolDate = (DateTime)ResultSet["enroldate"];
-
-                Student newstudent = new Student();
-                newstudent.StudentId = Convert.ToInt32(ResultSet["studentid"]);
-                newstudent.StudentFname = StudentFname;
-                newstudent.StudentLname = StudentLname;
-                newstudent.StudentNumber = StudentNumber;
-                newstudent.EnrolDate = EnrolDate;
-
-                studentsList.Add(newstudent);
+                Student student = new Student();
+                student.StudentId = Convert.ToInt32(resultSet["studentid"]);
+                student.StudentFname = resultSet["studentfname"].ToString();
+                student.StudentLname = resultSet["studentlname"].ToString();
+                student.StudentNumber = resultSet["studentnumber"].ToString();
+                student.EnrolDate = Convert.ToDateTime(resultSet["enroldate"]);
+                studentsList.Add(student);
             }
 
-            Conn.Close();
+            connection.Close();
 
             return studentsList;
         }
@@ -68,33 +60,29 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
         /// </summary>
         /// <param name="id">student id</param>
         /// <returns>Returns Student details</returns>
-        /// Example: /api/StudentData/1
+        /// Example: /api/StudentData/getstudent/1
         [HttpGet]
-        public Student FindStudents(int id)
+        public Student GetStudent(int id)
         {
-            
-            MySqlConnection Conn = School.AccessDatabase();
-            Conn.Open();
+            MySqlConnection connection = schoolDbContext.AccessDatabase();
+            connection.Open();
 
-            MySqlCommand cmd = Conn.CreateCommand();
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = "SELECT * FROM students WHERE studentid = " + id;
 
-            cmd.CommandText = "SELECT * FROM students WHERE studentid = @id";
-            cmd.Parameters.AddWithValue("@id", id);
-            cmd.Prepare();
+            MySqlDataReader result = command.ExecuteReader();
+            Student studentDetails = new Student();
 
-            MySqlDataReader ResultSet = cmd.ExecuteReader();
-            Student NewStudent = new Student();
-
-            while (ResultSet.Read())
+            while (result.Read())
             {
-                NewStudent.StudentId = Convert.ToInt32(ResultSet["studentid"]);
-                NewStudent.StudentFname = ResultSet["studentfname"].ToString();
-                NewStudent.StudentLname = ResultSet["studentlname"].ToString();
-                NewStudent.StudentNumber = ResultSet["studentnumber"].ToString();
-                NewStudent.EnrolDate = Convert.ToDateTime(ResultSet["enroldate"]);
+                studentDetails.StudentId = Convert.ToInt32(result["studentid"]);
+                studentDetails.StudentFname = result["studentfname"].ToString();
+                studentDetails.StudentLname = result["studentlname"].ToString();
+                studentDetails.StudentNumber = result["studentnumber"].ToString();
+                studentDetails.EnrolDate = Convert.ToDateTime(result["enroldate"]);
             }
-            return NewStudent;
-        }
 
+            return studentDetails;
+        }
     }
 }

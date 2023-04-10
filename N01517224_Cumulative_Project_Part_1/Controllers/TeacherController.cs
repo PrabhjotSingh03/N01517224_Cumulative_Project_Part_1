@@ -10,30 +10,21 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
 {
     public class TeacherController : Controller
     {
-        // GET: Teacher
-        public ActionResult Index()
+        // GET: Teacher/List
+        // GET: Teacher/List?searchText=alex
+        public ActionResult List(string searchText = null)
         {
-            return View();
+            TeacherDataController teacherDataController = new TeacherDataController();
+            List<Teacher> teachers = teacherDataController.ListTeachers(searchText);
+            return View(teachers);
         }
 
-        [Route("/Teacher/List/{SearchKey}")]
-        public ActionResult List(string SearchKey = null)
+        // GET: /Teacher/show/{id}
+        public ActionResult Show(int id)
         {
-            TeacherDataController controller = new TeacherDataController();
-            IEnumerable<Teacher> Teachers = controller.ListTeachers(SearchKey);
-            return View(Teachers);
-        }
-
-        //GET: Teacher/Show/id
-        [Route("Teacher/Show/{id}")]
-        public ActionResult Show(int teacherid)
-        {
-            TeacherDataController controller = new TeacherDataController();
-
-            TeacherCourse TeacherCourse = controller.FindTeacher(teacherid);
-
-            //routes the single teacher information to Show.cshtml
-            return View(TeacherCourse);
+            TeacherDataController teacherDataController = new TeacherDataController();
+            Teacher teacherDetails = teacherDataController.GetTeacher(id);
+            return View(teacherDetails);
         }
     }
-}
+   }

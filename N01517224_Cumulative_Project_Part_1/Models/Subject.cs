@@ -5,7 +5,7 @@ using System.Web;
 
 namespace N01517224_Cumulative_Project_Part_1.Models
 {
-    public class Classes
+    public class Subject
     {
         public int ClassId { get; set; }
         public string ClassCode { get; set; }
@@ -14,5 +14,6 @@ namespace N01517224_Cumulative_Project_Part_1.Models
         public DateTime StartDate { get; set; }
         public int TeacherId { get; set; }
         public string TeacherName { get; set; }
+
     }
 }

@@ -12,206 +12,99 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
 {
     public class TeacherDataController : ApiController
     {
-        //allows to access our database
-        private SchoolDbContext School = new SchoolDbContext();
+        private SchoolDbContext schoolDbContext = new SchoolDbContext();
 
-        ///<summary>
-        /// Return the list of Teachers
-        ///</summary>
-        ///<param name="SearchKey">search teacher by their first name or last name, both first and last name, their employeenumber, hiredate and salary</param>
-        ///<example>GET api/TeacherData/Listteachers/linda</example>
-        ///<example>GET api/TeacherData/Listteachers/cody</example>
-        ///<return>
-        ///A list of Teacher object (id, firstname, lastname, employeenumber, hiredate, salary)
-        ///</return>
-
+        /// <summary>
+        /// Returns a list of Teachers
+        /// </summary>
+        /// <param name="searchText">takes in search text (optional)</param>
+        /// <returns>A list of Teacher objects</returns>
+        /// Example : /api/TeacherData/listteachers
+        /// Example : /api/TeacherData/listteachers/alex
         [HttpGet]
-        [Route("api/TeacherData/ListTeachers/{SearchKey?}")]
-        public List<Teacher> ListTeachers(string SearchKey = null)
+        [Route("api/TeacherData/ListTeachers/{searchText?}")]
+        public List<Teacher> ListTeachers(string searchText = null)
         {
-            //create connection
-            MySqlConnection Conn = School.AccessDatabase();
 
-            //open connection
-            Conn.Open();
+            MySqlConnection connection = schoolDbContext.AccessDatabase();
 
-            //establish a new command
-            MySqlCommand cmd = Conn.CreateCommand();
+            connection.Open();
 
-            //Sql query
-            cmd.CommandText = "Select * from teachers where lower(teacherfname) like lower(@key) or lower(teacherlname) like lower(@key) or lower(concat(teacherfname, ' ',teacherlname)) like lower(@key) or lower(employeenumber) like lower(@key) or lower(hiredate) like lower(@key) or lower(salary) like lower(@key)";
-            cmd.Parameters.AddWithValue("@key", "%" + SearchKey + "%");
-            cmd.Prepare();
+            MySqlCommand mySqlCommand = connection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT * FROM teachers WHERE LOWER(teacherfname) like LOWER(@key) OR LOWER(teacherlname) LIKE LOWER(@key)";
+            mySqlCommand.Parameters.AddWithValue("@key", "%" + searchText + "%");
+            mySqlCommand.Prepare();
 
-            //gather result of query into a variable
-            MySqlDataReader ResultSet = cmd.ExecuteReader();
+            MySqlDataReader resultSet = mySqlCommand.ExecuteReader();
 
-            //create an empty list of teachers
-            List<Teacher> Teachers = new List<Teacher> {};
+            List<Teacher> teachersList = new List<Teacher>();
 
-            //loop for the result
-            while (ResultSet.Read())
+            while (resultSet.Read())
             {
-                int TeacherId = (int)ResultSet["teacherid"];
-                string TeacherFName = ResultSet["teacherfname"].ToString();
-                string TeacherLName = ResultSet["teacherlname"].ToString();
-                string EmployeeNumber = ResultSet["employeenumber"].ToString();
-                DateTime HireDate = (DateTime)ResultSet["hiredate"];
-
-                Teacher NewTeacher = new Teacher();
-                NewTeacher.TeacherId = TeacherId;
-                NewTeacher.TeacherFName = TeacherFName;
-                NewTeacher.TeacherLName = TeacherLName;
-                NewTeacher.EmployeeNumber = EmployeeNumber;
-                NewTeacher.HireDate = HireDate;
-                NewTeacher.Salary = Convert.ToDouble(ResultSet["salary"]);
-
-                Teachers.Add(NewTeacher);
+                Teacher teacher = new Teacher();
+                teacher.TeacherId = Convert.ToInt32(resultSet["teacherid"]);
+                teacher.FirstName = resultSet["teacherfname"].ToString();
+                teacher.LastName = resultSet["teacherlname"].ToString();
+                teacher.EmployeeNumber = resultSet["employeenumber"].ToString();
+                teacher.HireDate = Convert.ToDateTime(resultSet["hiredate"]);
+                teacher.Salary = Convert.ToDecimal(resultSet["salary"]);
+                teachersList.Add(teacher);
             }
 
-            //close connection
-            Conn.Close();
+            connection.Close();
 
-            return Teachers;
+            return teachersList;
         }
 
         /// <summary>
-        /// Finds an author from the MySQL Database through an id. Non-Deterministic.
+        /// Gets details of a teachers from id
         /// </summary>
-        /// <param name="id">The teacher ID</param>
-        /// <example>api/AuthorData/Findteacher/6 -> {teacher Object}</example>
-        /// <example>api/AuthorData/Findteacher/10 -> {teacher Object}</example>
+        /// <param name="id">teacher id</param>
+        /// <returns>Returns Teacher details</returns>
+        /// Example: /api/TeacherData/getteacher/1
         [HttpGet]
-        [Route("Teacher/Show/{id}")]
-        public Teacher FindTeachers(int id)
+        public Teacher GetTeacher(int id)
         {
-            Teacher NewTeacher = new Teacher();
+            MySqlConnection connection = schoolDbContext.AccessDatabase();
+            connection.Open();
 
-            //Create an instance of a connection
-            MySqlConnection Conn = School.AccessDatabase();
+            MySqlCommand command = connection.CreateCommand();
+            command.CommandText = "SELECT * FROM teachers WHERE teacherid = " + id;
 
-            //Open the connection between the web server and database
-            Conn.Open();
+            MySqlDataReader result = command.ExecuteReader();
+            Teacher teacherDetails = new Teacher();
 
-            //Establish a new command (query) for our database
-            MySqlCommand cmd = Conn.CreateCommand();
-
-            //SQL QUERY
-            cmd.CommandText = "Select * from teachers where teacherid = @id";
-            cmd.Parameters.AddWithValue("@id", id);
-            cmd.Prepare();
-
-            //Gather Result Set of Query into a variable
-            MySqlDataReader ResultSet = cmd.ExecuteReader();
-
-            while (ResultSet.Read())
+            while (result.Read())
             {
-                int TeacherId = (int)ResultSet["teacherid"];
-                string TeacherFName = ResultSet["teacherfname"].ToString();
-                string TeacherLName = ResultSet["teacherlname"].ToString();
-                string EmployeeNumber = ResultSet["employeenumber"].ToString();
-                DateTime HireDate = (DateTime)ResultSet["hiredate"];
-
-                NewTeacher.TeacherId = TeacherId;
-                NewTeacher.TeacherFName = TeacherFName;
-                NewTeacher.TeacherLName = TeacherLName;
-                NewTeacher.EmployeeNumber = EmployeeNumber;
-                NewTeacher.HireDate = HireDate;
-                NewTeacher.Salary = Convert.ToDouble(ResultSet["salary"]);
-            }
-            Conn.Close();
-
-            return NewTeacher;
-        }
-
-
-
-
-        /// <summary>
-        /// return a teacher information which match the teacher id
-        /// </summary>
-        /// <param name="teacherid">teacher's id number</param>
-        /// <returns>
-        /// return a teacher information (including id, firstname, lastname, employeenumber, hiredate, salary) and teacher's course 
-        /// </returns>
-
-        [HttpGet]
-        [Route("api/TeacherData/FindTeacher/{teacherid}")]
-
-        public TeacherCourse FindTeacher(int teacherid)
-        {
-            //create connection
-            MySqlConnection Conn = School.AccessDatabase();
-
-            //open connection
-            Conn.Open();
-
-            //establish a new command
-            MySqlCommand cmd = Conn.CreateCommand();
-
-            //sql query
-            // find teacher 
-            cmd.CommandText = "SELECT * FROM teachers WHERE teacherid = @teacherid";
-            cmd.Parameters.AddWithValue("@teacherid", teacherid);
-            cmd.Prepare();
-
-            //gather result of query into a variable
-            MySqlDataReader TeacherResult = cmd.ExecuteReader();
-
-            //create a teacher instance
-            Teacher SelectedTeacher = new Teacher();
-
-
-            //loop for the result
-            while (TeacherResult.Read())
-            {
-
-                SelectedTeacher.TeacherId = Convert.ToInt32(TeacherResult["teacherid"]);
-                SelectedTeacher.TeacherFName = TeacherResult["teacherfname"].ToString();
-                SelectedTeacher.TeacherLName = TeacherResult["teacherlname"].ToString();
-                SelectedTeacher.EmployeeNumber = TeacherResult["employeenumber"].ToString();
-                SelectedTeacher.HireDate = Convert.ToDateTime(TeacherResult["hiredate"]);
-                SelectedTeacher.Salary = Convert.ToDouble(TeacherResult["salary"]);
-
+                teacherDetails.TeacherId = Convert.ToInt32(result["teacherid"]);
+                teacherDetails.FirstName = result["teacherfname"].ToString();
+                teacherDetails.LastName = result["teacherlname"].ToString();
+                teacherDetails.EmployeeNumber = result["employeenumber"].ToString();
+                teacherDetails.HireDate = Convert.ToDateTime(result["hiredate"]);
+                teacherDetails.Salary = Convert.ToDecimal(result["salary"]);
             }
 
-            // close sql reader
-            TeacherResult.Close();
+            result.Close();
 
-            // establish a new command
-            // MySqlCommand cmd2 = Conn.CreateCommand();
+            MySqlCommand getSubjectscommand = connection.CreateCommand();
+            getSubjectscommand.CommandText = "SELECT * FROM classes WHERE teacherid = " + id;
 
-            // find course for the teacher
-            cmd.CommandText = "SELECT * FROM classes WHERE teacherid = @teacherid";
-
-
-            //gather result of query into a variable
-            MySqlDataReader ClassResult = cmd.ExecuteReader();
-
-            // create a list of classes
-            List<Course> ClassList = new List<Course> { };
-
-            //loop for the result
-            while (ClassResult.Read())
+            MySqlDataReader subjectsresult = getSubjectscommand.ExecuteReader();
+            teacherDetails.Subjects = new List<Subject>();
+            while (subjectsresult.Read())
             {
-                Course NewCourse = new Course();
-                NewCourse.ClassName = ClassResult["classname"].ToString();
-                ClassList.Add(NewCourse);
+                Subject subject = new Subject()
+                {
+                    ClassCode = subjectsresult["classcode"].ToString(),
+                    ClassId = Convert.ToInt32(subjectsresult["classid"]),
+                    ClassName = subjectsresult["classname"].ToString(),
+                    FinishDate = Convert.ToDateTime(subjectsresult["finishdate"]),
+                    StartDate = Convert.ToDateTime(subjectsresult["startdate"])
+                };
+                teacherDetails.Subjects.Add(subject);
             }
 
-            // close sql reader
-            ClassResult.Close();
-
-            //close the connection
-            Conn.Close();
-
-            //combine a teacher and a couse information
-            TeacherCourse TeacherCourse = new TeacherCourse();
-            TeacherCourse.Teacher = SelectedTeacher;
-            TeacherCourse.Courses = ClassList;
-
-            //return the final list of teacher information
-            return TeacherCourse;
+            return teacherDetails;
         }
     }
 }
