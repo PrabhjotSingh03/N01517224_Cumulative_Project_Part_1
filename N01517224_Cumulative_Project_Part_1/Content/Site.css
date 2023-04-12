@@ -18,16 +18,18 @@ textarea {
 .navbar {
     background-color:darkslateblue;
 }
-    .navbar a {
-    color:white;
-    }
+.navbar a {
+   color:white;
+}
+.navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll {
+    margin: 15px;
+}
 .navbar-nav li {
     list-style: none;
 }
 .navbar-nav a{
     text-decoration:none;
     padding:10px;
-    
 }
 .teacherDetails, .studentDetails, .courseDetails {
     border-radius: 5px;

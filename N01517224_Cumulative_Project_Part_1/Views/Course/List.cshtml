@@ -1,0 +1,21 @@
+﻿@model List<N01517224_Cumulative_Project_Part_1.Models.Subject>
+    @{
+        ViewBag.Title = "List";
+    }
+
+    <h1>Course List</h1>
+
+    <div>
+        <form  action="/Course/List" method="GET">
+            <input type="text" class="form-control" name="searchText" autocomplete="off" />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+    <div>
+            @foreach (N01517224_Cumulative_Project_Part_1.Models.Subject subject in Model)
+            {
+                <div>
+                    <a href="/Course/show/@subject.ClassId">@subject.ClassName</a>
+                </div>
+            }
+    </div>

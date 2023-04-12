@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "New";
+}
+
+<nav class="spacing">
+    <a href="/Teacher/List">Back to Teachers List</a>
+</nav>
+<h2>Teacher Information:</h2>
+
+<form action="/Teacher/Create" method="POST" name="createTeacher">
+    <div class="spacing">
+        <label for="TeacherFname">First Name:</label>
+        <input type="text" name="TeacherFname" id="TeacherFname" class="TeacherFname" />
+        <small class="errorMessage" id="errorMessage" style="visibility:hidden; color:red;">Please provide your first name</small>
+    </div>
+    <div class="spacing">
+        <label for="TeacherLname">Last Name:</label>
+        <input type="text" name="TeacherLname" id="TeacherLname" class="TeacherLname" />
+        <small class="errorMessage2" style="visibility:hidden; color:red;">Please provide your last name</small>
+    </div>
+    <div class="spacing">
+        <label for="EmployeeNumber">Employee Number:</label>
+        <input type="text" name="EmployeeNumber" id="EmployeeNumber" class="EmployeeNumber" />
+        <small class="errorMessage3" style="visibility:hidden; color:red;">Please enter an employee number</small>
+    </div>
+    <div class="spacing">
+        <label for="HireDate">Hired Since:</label>
+        <input type="date" name="HireDate" id="HireDate" class="HireDate" />
+        <small class="errorMessage4" style="visibility:hidden; color:red;">You cannot leave the date empty</small>
+    </div>
+    <div class="spacing">
+        <label for="Salary">Salary:</label>
+        <input type="number" min="0" step=".01" name="Salary" id="Salary" class="Salary" />
+        <small class="errorMessage5" style="visibility:hidden; color:red;">Please enter salary</small>
+    </div>
+    <div class="spacing">
+        <input type="submit" value="Add Teacher" id="teacherbutton" />
+    </div>
+</form>
+
+<script src="~/Scripts/script.js"></script>

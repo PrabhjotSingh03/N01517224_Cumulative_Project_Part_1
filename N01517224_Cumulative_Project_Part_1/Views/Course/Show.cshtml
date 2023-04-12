@@ -1,0 +1,28 @@
+﻿@model N01517224_Cumulative_Project_Part_1.Models.Subject
+@{
+    ViewBag.Title = "Show";
+}
+<div>
+    <a href="/Course/List">Back to Course List</a>
+</div>
+
+<h1>Course Information</h1>
+
+<div>
+    Course Name: @Model.ClassName
+</div>
+<div>
+    Course Code: @Model.ClassCode
+</div>
+<div>
+    Start Date: @Model.StartDate.ToShortDateString()
+</div>
+<div>
+    Finish Date: @Model.FinishDate.ToShortDateString()
+</div>
+<div>
+    Teacher Id: @Model.TeacherId
+</div>
+<div>
+    Teacher Name: @Model.TeacherName
+</div>

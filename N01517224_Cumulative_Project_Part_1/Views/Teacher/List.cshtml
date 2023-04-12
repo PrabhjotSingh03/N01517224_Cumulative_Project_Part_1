@@ -2,7 +2,9 @@
 @{
     ViewBag.Title = "List";
 }
-
+<div>
+    <a class="navlink" href="/Teacher/New">New Teacher</a>
+</div>
 <h1>Teacher List</h1>
 
 <h2>There are total @Model.Count() teacher(s) in the school.</h2>
@@ -19,7 +21,7 @@
         foreach (N01517224_Cumulative_Project_Part_1.Models.Teacher Teacher in Model)
         {
             <div>
-                <a href="/Teacher/Show/@Teacher.TeacherId">@Teacher.FirstName @Teacher.LastName </a>
+                <a href="/Teacher/Show/@Teacher.TeacherId">@Teacher.TeacherFname @Teacher.TeacherLname </a>
             </div>
         }
     }

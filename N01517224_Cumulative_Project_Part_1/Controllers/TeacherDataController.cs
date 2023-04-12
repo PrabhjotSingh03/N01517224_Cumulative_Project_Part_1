@@ -43,8 +43,8 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
             {
                 Teacher teacher = new Teacher();
                 teacher.TeacherId = Convert.ToInt32(resultSet["teacherid"]);
-                teacher.FirstName = resultSet["teacherfname"].ToString();
-                teacher.LastName = resultSet["teacherlname"].ToString();
+                teacher.TeacherFname = resultSet["teacherfname"].ToString();
+                teacher.TeacherLname = resultSet["teacherlname"].ToString();
                 teacher.EmployeeNumber = resultSet["employeenumber"].ToString();
                 teacher.HireDate = Convert.ToDateTime(resultSet["hiredate"]);
                 teacher.Salary = Convert.ToDecimal(resultSet["salary"]);
@@ -77,8 +77,8 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
             while (result.Read())
             {
                 teacherDetails.TeacherId = Convert.ToInt32(result["teacherid"]);
-                teacherDetails.FirstName = result["teacherfname"].ToString();
-                teacherDetails.LastName = result["teacherlname"].ToString();
+                teacherDetails.TeacherFname = result["teacherfname"].ToString();
+                teacherDetails.TeacherLname = result["teacherlname"].ToString();
                 teacherDetails.EmployeeNumber = result["employeenumber"].ToString();
                 teacherDetails.HireDate = Convert.ToDateTime(result["hiredate"]);
                 teacherDetails.Salary = Convert.ToDecimal(result["salary"]);
@@ -105,6 +105,80 @@ namespace N01517224_Cumulative_Project_Part_1.Controllers
             }
 
             return teacherDetails;
+        }
+        //POST
+        /// <summary>
+        /// Write query to delete specific teacher based on his/her id
+        /// </summary>
+        /// <param name="id"> Id of the teacher</param>
+        /// <example>POST /api/TeacherData/DeleteTeacher/5</example>
+        [HttpPost]
+        public void DeleteTeacher(int id)
+        {
+            //Create a connection
+            MySqlConnection Connection = schoolDbContext.AccessDatabase();
+
+            //Open the connection between local db and web server
+            Connection.Open();
+
+            //New command - Query for DB
+            MySqlCommand command = Connection.CreateCommand();
+
+            //Write SQL query
+            command.CommandText = "delete from teachers where teacherid=@id";
+            command.Parameters.AddWithValue("@id", id);
+            command.Prepare();
+
+            //Run the query in db
+            command.ExecuteNonQuery();
+
+            //Close the db connection
+            Connection.Close();
+        }
+
+        //POST
+        /// <summary>
+        /// Create a new teacher in db by using query (insert into). 
+        /// </summary>
+        /// <param name="NewTeacher"> Created object which is holding all info given by user to insert into teachers table</param>
+        /// <example> /api/TeacherData/AddTeacher
+        /// FORM / POST DATA / REQUEST
+        /// {
+        ///     TeacherFname: "Luis";
+        ///     TeacherLname: "Miguel";
+        ///     EmployeeNumber: "T639";
+        ///     Hiredate: "2022-02-09 00:00:00";
+        ///     Salary: "62.48";
+        /// }
+        /// </example>
+        [HttpPost]
+        public void AddTeacher([FromBody] Teacher NewTeacher)
+        {
+            //Create a connection
+            MySqlConnection Connection = schoolDbContext.AccessDatabase();
+
+            //Open the connection between local db and web server
+            Connection.Open();
+
+            //New command - Query for DB
+            MySqlCommand command = Connection.CreateCommand();
+
+            //Write SQL query
+            command.CommandText = "insert into teachers(teacherfname, teacherlname, employeenumber, hiredate, salary) values (@TeacherFname, @TeacherLname, @EmployeeNumber, @Hiredate, @Salary)";
+            command.Parameters.AddWithValue("@TeacherFname", NewTeacher.TeacherFname);
+            command.Parameters.AddWithValue("@TeacherLname", NewTeacher.TeacherLname);
+            command.Parameters.AddWithValue("@EmployeeNumber", NewTeacher.EmployeeNumber);
+            command.Parameters.AddWithValue("@Hiredate", NewTeacher.HireDate);
+            command.Parameters.AddWithValue("@Salary", NewTeacher.Salary);
+            command.Prepare();
+
+            //Run the query in db
+            command.ExecuteNonQuery();
+
+            //Close the db connection
+            Connection.Close();
+
+
         }
     }
 }
