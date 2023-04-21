@@ -1,0 +1,43 @@
+﻿@model N01517224_Cumulative_Project_Part_1.Models.Teacher
+@{
+    ViewBag.Title = "Edit";
+}
+
+<nav class="spacing">
+    <a href="/Teacher/Show/@Model.TeacherId">Back</a>
+</nav>
+
+<h2>Edit Teacher Information:</h2>
+
+<form action="/Teacher/Update/@Model.TeacherId" method="POST">
+    <div class="spacing">
+        <label for="TeacherFname">First Name:</label>
+        <input type="text" name="TeacherFname" id="TeacherFname" class="tFname" value="@Model.TeacherFname" />
+        <small class="errorMessage" style="visibility:hidden; color:red;">Please provide your first name</small>
+    </div>
+    <div class="spacing">
+        <label for="TeacherLname">Last Name:</label>
+        <input type="text" name="TeacherLname" id="TeacherLname" class="tLname" value="@Model.TeacherLname" />
+        <small class="errorMessage2" style="visibility:hidden; color:red;">Please provide your last name</small>
+    </div>
+    <div class="spacing">
+        <label for="EmployeeNumber">Employee Number:</label>
+        <input type="text" name="EmployeeNumber" id="EmployeeNumber" class="empNum" value="@Model.EmployeeNumber" />
+        <small class="errorMessage3" style="visibility:hidden; color:red;">Please enter an employee number</small>
+    </div>
+    <div class="spacing">
+        <label for="Hiredate">Hire Date:</label>
+        <input type="date" name="Hiredate" id="Hiredate" class="hireDate" value="@Model.HireDate.ToString("yyyy-MM-dd")" />
+        <small class="errorMessage4" style="visibility:hidden; color:red;">You cannot leave the date empty</small>
+    </div>
+    <div class="spacing">
+        <label for="Salary">Salary:</label>
+        <input type="number" min="0" step=".01" name="Salary" id="Salary" class="salary" value="@Model.Salary" />
+        <small class="errorMessage5" style="visibility:hidden; color:red;">Please enter salary</small>
+    </div>
+    <div class="spacing">
+        <input type="submit" value="Update Teacher" id="teacherbutton" />
+    </div>
+</form>
+
+<script src="~/Scripts/script.js"></script>
